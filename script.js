@@ -1,66 +1,45 @@
-const months = [31,28,31,30,31,30,31,31,30,31,30,31];
-
-function ageCalculate(){
-    let today = new Date();
-    let inputDate = new Date(document.getElementById("date-input").value);
-    let birthMonth,birthDate,birthYear;
-    let birthDetails = {
-        date:inputDate.getDate(),
-        month:inputDate.getMonth()+1,
-        year:inputDate.getFullYear()
-    }
-    let currentYear = today.getFullYear();
-    let currentMonth = today.getMonth()+1;
-    let currentDate = today.getDate();
-
-    leapChecker(currentYear);
-
-    if(
-        birthDetails.year > currentYear ||
-        ( birthDetails.month > currentMonth && birthDetails.year == currentYear) || 
-        (birthDetails.date > currentDate && birthDetails.month == currentMonth && birthDetails.year == currentYear)
-    ){
-        alert("Not Born Yet");
-        displayResult("-","-","-");
-        return;
-    }
-
-    birthYear = currentYear - birthDetails.year;
-
-    if(currentMonth >= birthDetails.month){
-        birthMonth = currentMonth - birthDetails.month;
+const inputBox = document.getElementById("input-box")
+const listcontainer = document.getElementById("list-container")
+ function addTask() { 
+    if (inputBox.value == '') {
+        alert("you must write something !");
+        
     }
     else{
-        birthYear--;
-        birthMonth = 12 + currentMonth - birthDetails.month;
-    }
+        let li= document.createElement("li");
+        li.innerHTML= inputBox.value;
+        listcontainer .appendChild (li);
+        let span =document.createElement("span");
+        span.innerHTML = "\u00d7";
+        li .appendChild(span);
 
-    if(currentDate >= birthDetails.date){
-        birthDate = currentDate - birthDetails.date;
-    }
-    else{
-        birthMonth--;
-        let days = months[currentMonth - 2];
-        birthDate = days + currentDate - birthDetails.date;
-        if(birthMonth < 0){
-            birthMonth = 11;
-            birthYear--;
-        }
-    }
-    displayResult(birthDate,birthMonth,birthYear);
-}
 
-function displayResult(bDate,bMonth,bYear){
-    document.getElementById("years").textContent = bYear;
-    document.getElementById("months").textContent = bMonth;
-    document.getElementById("days").textContent = bDate;
-}
+    }
+    inputBox.value ="";
+    savedata();
 
-function leapChecker(year){
-    if(year % 4 == 0 || (year % 100 == 0 && year % 400 == 0)){
-        months[1] = 29;
+ }
+ listcontainer.addEventListener("click",function(e){
+    if (e.target.tagName === "LI"){
+        e.target.classList.toggle("checked");
+        savedata();
+
     }
-    else{
-        months[1] = 28;
+    else if( e .target.tagName === "SPAN"){
+        e.target.parentElement.remove();
+        savedata();
+
     }
-}
+    
+ },false);
+ function savedata(){
+    localStorage.setItem("data", listcontainer.innerHTML);
+
+
+ }
+ function showTask (){
+    listcontainer.innerHTML =localStorage.getItem("data");
+
+ }
+ showTask();
+
